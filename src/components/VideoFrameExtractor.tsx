@@ -5,6 +5,8 @@ import { Progress } from '@/components/ui/progress';
 import { Upload, Film, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
+const FRAME_SIZE = 100;
+
 interface VideoFrameExtractorProps {
   onFramesExtracted: (frames: string[]) => void;
 }
@@ -17,7 +19,7 @@ export const VideoFrameExtractor = ({ onFramesExtracted }: VideoFrameExtractorPr
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const extractFrames = useCallback(async (video: HTMLVideoElement, frameCount: number = 3000) => {
+  const extractFrames = useCallback(async (video: HTMLVideoElement, frameCount: number = FRAME_SIZE) => {
     if (!canvasRef.current) return [];
 
     const canvas = canvasRef.current;
@@ -99,7 +101,7 @@ export const VideoFrameExtractor = ({ onFramesExtracted }: VideoFrameExtractorPr
       toast.success('Video loaded successfully, extracting frames...');
       
       // Extract frames
-      const frames = await extractFrames(video, 3000);
+      const frames = await extractFrames(video, FRAME_SIZE);
       
       if (frames.length > 0) {
         onFramesExtracted(frames);
