@@ -40,12 +40,15 @@ export const InfiniteZoomViewer = ({ frames }: InfiniteZoomViewerProps) => {
     };
   }, [isAutoPlaying, frames.length]);
 
-  // Mouse wheel zoom
+  // Mouse wheel frame navigation
   const handleWheel = useCallback((e: WheelEvent) => {
     e.preventDefault();
-    const delta = e.deltaY > 0 ? 0.9 : 1.1;
-    setZoomLevel(prev => Math.max(0.5, Math.min(5, prev * delta)));
-  }, []);
+    const delta = e.deltaY > 0 ? 1 : -1;
+    setCurrentFrameIndex(prev => {
+      const newIndex = prev + delta;
+      return Math.max(0, Math.min(frames.length - 1, newIndex));
+    });
+  }, [frames.length]);
 
   // Mouse drag for panning
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
@@ -204,7 +207,7 @@ export const InfiniteZoomViewer = ({ frames }: InfiniteZoomViewerProps) => {
         <div className="absolute top-4 left-4 surface-glass rounded-lg p-3 text-sm space-y-1">
           <div className="flex items-center space-x-2">
             <MousePointer className="w-4 h-4 text-primary" />
-            <span>Scroll to zoom, drag to pan</span>
+            <span>Scroll to navigate frames, drag to pan</span>
           </div>
           <div className="flex items-center space-x-2">
             <Keyboard className="w-4 h-4 text-primary" />
